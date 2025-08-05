@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterator
+from typing import Generator
 
 class EmptyListException(Exception):
     pass
@@ -14,6 +14,9 @@ class Node:
         self.value = value
         self.next_node = next_node
 
+    def __repr__(self):
+        return f"Node({self.value!r}, {self.next_node!r})"
+
 
 class LinkedList:
     root: Node | None
@@ -26,16 +29,22 @@ class LinkedList:
             for value in values:
                 self.push(value)
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Generator:
         self._current_node = self.root
-        return self
+        while self._current_node:
+            yield self._current_node.value
+            self._current_node = self._current_node.next_node
 
-    def __next__(self):
-        if not self._current_node:
-            raise StopIteration
-        value = self._current_node.value
-        self._current_node = self._current_node.next_node
-        return value
+        # self._current_node = self.root
+        # return self
+
+
+    # def __next__(self):
+    #     if not self._current_node:
+    #         raise StopIteration
+    #     value = self._current_node.value
+    #     self._current_node = self._current_node.next_node
+    #     return value
 
     def __len__(self):
         if self.root is None:
