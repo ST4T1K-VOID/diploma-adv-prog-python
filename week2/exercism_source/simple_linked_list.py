@@ -1,30 +1,41 @@
+from __future__ import annotations
+
+from typing import Iterator
+
 class EmptyListException(Exception):
     pass
 
 
 class Node:
-    def __init__(self, value):
+    value: int
+    next_node: Node | None
+
+    def __init__(self, value: int, next_node: Node | None = None):
         self.value = value
-        self.next_node = None
-
-    def value(self):
-        # i.e. get_value
-        return self.value
-
-    def next(self):
-        # i.e. get_next
-        return self.next_node
+        self.next_node = next_node
 
 
 class LinkedList:
-    def __init__(self, values=None):
+    root: Node | None
+    _current_node: Node | None
+
+    def __init__(self, values: list[int, ...] | None = None):
         self.root = None
-        if values is not None:
+        self._current_node = None
+        if values:
             for value in values:
                 self.push(value)
 
-    def __iter__(self):
-        pass
+    def __iter__(self) -> Iterator:
+        self._current_node = self.root
+        return self
+
+    def __next__(self):
+        if not self._current_node:
+            raise StopIteration
+        value = self._current_node.value
+        self._current_node = self._current_node.next_node
+        return value
 
     def __len__(self):
         if self.root is None:
@@ -35,29 +46,35 @@ class LinkedList:
         counting = True
         while counting:
             length += 1
-            if current.next() is None:
+            if current.next_node is None:
                 counting = False
             else:
-                current = current.next()
+                current = current.next_node
         return length
 
     def head(self):
+        """get head/root???"""
         pass
 
-    def push(self, value):
-        # add
-        if self.root is None:
+    def push(self, value: int) -> None:
+        """Add to list from head/root"""
+        if not self.root:
             self.root = Node(value)
+            return
         else:
-            current = self.root
-            searching = True
-            while searching:
-                if current.next() is None:
-                    current.next_node = Node(value)
+            new_node = Node(value, self.root)
+            self.root = new_node
 
-    def pop(self):
-        # remove
+    def pop(self) -> int:
+        """remove head/root. Return value of popped node"""
+        popped = self.root.value
+        self.root = self.root.next_node
+        return popped
+
+    def reversed(self) -> list[int, ...]:
+        """Returns list of values in the order they were entered"""
         pass
 
-    def reversed(self):
-        pass
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return f"{class_name}||ROOT:{self.root}"
