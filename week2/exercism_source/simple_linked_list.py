@@ -58,12 +58,8 @@ class LinkedList:
 
     def push(self, value: int) -> None:
         """Add to list from head/root"""
-        if not self.root:
-            self.root = Node(value)
-            return
-        else:
-            new_node = Node(value, self.root)
-            self.root = new_node
+        new_node = Node(value, self.root)
+        self.root = new_node
 
     def pop(self) -> int:
         """remove head/root. Return value of popped node"""
